@@ -119,8 +119,16 @@ public class Main
             }
             else if (action == 4)
             {
-                //TODO add something here
-                playerCharacter = null;
+                Character p = getCharacter("view");
+                System.out.println("NAME: " + p.getCharacterName());
+                System.out.println("CLASS: " + p.getCharacterClass());
+                System.out.println("ATK: " + p.getAttackStat());
+                System.out.println("DEF: " + p.getDefenseStat());
+                System.out.println("SPD: " + p.getSpeedStat());
+                System.out.println("LVL: " + p.getCharacterLevel());
+                System.out.println("XP: " + p.getCharacterXP());
+                System.out.println(GOLD: " + p.getCharacterGold());
+                System.out.println();
             }
             else if (action != 5)
             {
