@@ -104,22 +104,27 @@ public class Main
             }
             else if (action == 3)
             {
-                if (playerCharacter == GaryOak)
+                if (playerCharacter != GaryOak)
                 {
                     @Nullable Character enemy = getCharacter("fight");
                     if (enemy != playerCharacter)
                     {
                         Duel(playerCharacter, enemy);
                     }
+                    else
+                    {
+                        System.out.println("You can't fight yourself!\n");
+                    }
                 }
                 else
                 {
-                    System.out.println("I'm sorry, please load or create a character.");
+                    System.out.println("I'm sorry, please load or create a character.\n");
                 }
             }
             else if (action == 4)
             {
                 Character p = getCharacter("view");
+                System.out.println("\t:::STATS:::");
                 System.out.println("NAME: " + p.getCharacterName());
                 System.out.println("CLASS: " + p.getCharacterClass());
                 System.out.println("ATK: " + p.getAttackStat());
@@ -127,7 +132,7 @@ public class Main
                 System.out.println("SPD: " + p.getSpeedStat());
                 System.out.println("LVL: " + p.getCharacterLevel());
                 System.out.println("XP: " + p.getCharacterXP());
-                System.out.println(GOLD: " + p.getCharacterGold());
+                System.out.println("GOLD: " + p.getCharacterGold());
                 System.out.println();
             }
             else if (action != 5)
@@ -137,12 +142,10 @@ public class Main
         }
         writeToFile(toFile);
     }
-
     public static void readFile(String filename) throws IOException
     {
         FileReader fr = new FileReader(filename);
         BufferedReader reader = new BufferedReader(fr);
-
         try
         {
             while (true)
@@ -160,7 +163,6 @@ public class Main
                 int xp = Integer.parseInt(reader.readLine());
                 int gold = Integer.parseInt(reader.readLine());
                 reader.readLine();
-
                 Character p = new Character(atk, def, spd, characterClass, name, lvl);
                 p.characterGold = gold;
                 p.characterXP = xp;
@@ -171,7 +173,6 @@ public class Main
             reader.close();
         }
     }
-
     public static void writeToFile(PrintWriter writer)
     {
         //TODO: writer should really be static. Or local. No need for it to be a parameter, right?
@@ -190,14 +191,12 @@ public class Main
         }
         writer.flush();
     }
-
     //My method to create a character
     public static void createCharacter(Scanner input, PrintWriter output)
     {
         //Prompt user
         System.out.print("Type in your character's name: ");
         String pName = input.nextLine();
-
         //Make sure the character has a unique name.
         while (charactersMap.containsKey(pName))
         {
@@ -290,7 +289,6 @@ public class Main
 
         //Store the new character in a temporary variable, add the name to my file and the character + name to my map.
         Character p = new Character(pATK, pDEF, pSPD, "none", pName, 1);
-        System.out.println(p.getCharacterName());
         charactersMap.put(pName, p);
 
         //output.println(p.getCharacterName());
@@ -401,9 +399,6 @@ public class Main
     //The function that handles the entire duel
     @NotNull public static Character Duel(@NotNull Character character1, @NotNull Character character2)
     {
-        //Ends the game if either character is dead
-        if (character1.isDead() || character2.isDead()) throw new IllegalArgumentException();
-
         //Round keeps track of the round number. The code inside the for loop is a single turn, and the loop continues until a either the round count hits max int or a character has died.
         for (int round = 1; round < Integer.MAX_VALUE; round++)
         {
@@ -441,11 +436,15 @@ public class Main
             if (attack(firstToAttack, firstToDefend, round))
             {
                 System.out.println("Character " + firstToAttack.getCharacterName() + " has defeated " + firstToDefend.getCharacterName() + "!\n");
+                firstToAttack.setHealth(firstToAttack.getBaseHealth());
+                firstToDefend.setHealth(firstToDefend.getBaseHealth());
                 return firstToAttack;
             }
             if (attack(firstToDefend, firstToAttack, round))
             {
                 System.out.println("Character " + firstToDefend.getCharacterName() + " has defeated " + firstToAttack.getCharacterName() + "!\n");
+                firstToAttack.setHealth(firstToAttack.getBaseHealth());
+                firstToDefend.setHealth(firstToDefend.getBaseHealth());
                 return firstToDefend;
             }
 
