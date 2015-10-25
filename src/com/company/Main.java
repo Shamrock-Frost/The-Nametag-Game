@@ -26,6 +26,8 @@ public class Main
     //Unrollable numbers used internally by the dice roller, to represent critical hits/misses.
 
     public static final Scanner console = new Scanner(System.in);
+    
+    private static boolean userReturned = false;
 
     public static Map<String, Character> charactersMap = new HashMap<>();
     @NotNull
@@ -93,9 +95,9 @@ public class Main
             else if (action == 2)
             {
                 Character p = getCharacter("load");
-                if (p == GaryOak)
+                if (p == GaryOak && !userReturned)
                 {
-                    System.out.println("lel nurd u don't have the skil for that.\nenjoy mmr hell");
+                    System.out.println("You can't load this character at this time.\n");
                 }
                 else
                 {
@@ -301,6 +303,7 @@ public class Main
     @Nullable
     public static Character getCharacter(String reason)
     {
+        userReturned = false;
         System.out.println("The following characters are available:");
         charactersMap.keySet().forEach(System.out::println);
 
@@ -310,6 +313,7 @@ public class Main
             String name = console.nextLine();
             if (name.equals(""))
             {
+                userReturned = true;
                 System.out.println("No character loaded. Going back to the main menu.\n");
                 return playerCharacter;
             }
