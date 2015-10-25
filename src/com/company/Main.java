@@ -139,7 +139,7 @@ public class Main
             }
             else if (action != 5)
             {
-                System.out.println("That is not a valid action.");
+                System.out.println("That is not a valid action.\n");
             }
         }
         writeToFile(toFile);
