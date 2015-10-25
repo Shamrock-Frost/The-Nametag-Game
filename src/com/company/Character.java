@@ -29,7 +29,7 @@ public class Character
         this.characterName = name;
         this.characterClass = classParameter;
         this.characterLvl = level;
-        this.health = (10 + characterLvl/2);
+        this.health = getBaseHealth();
         this.mana = 4;
         this.currentBuffs = new HashMap<>();
         this.removeAllBuffs();
@@ -107,6 +107,7 @@ public class Character
     public int getCurrentAttack() {return attackStat + currentBuffAmount(Buff.PowerBuff);}
     public int getCurrentDefense() {return defenseStat + currentBuffAmount(Buff.DefenseBuff) + currentBuffAmount(Buff.DefenseDebuff);}
     public int getCurrentSpeed() {return speedStat + currentBuffAmount(Buff.SpeedBuff) + currentBuffAmount(Buff.SpeedDebuff);}
+    public int getBaseHealth() {return (10 + characterLvl/2);}
 
     public int getAttackStat() {return attackStat;}
     public int getDefenseStat() {return defenseStat;}
@@ -130,6 +131,9 @@ public class Character
 
     public int getCharacterGold() {return characterGold;}
     public void setCharacterGold(int newCharacterGold) {characterGold = newCharacterGold;}
+
+    public int getHealth() {return health;}
+    public void setHealth(int newHealth) {health = newHealth;}
 
     public int rollAttack()
     {
