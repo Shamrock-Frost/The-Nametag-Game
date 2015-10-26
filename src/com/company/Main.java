@@ -26,7 +26,7 @@ public class Main
     //Unrollable numbers used internally by the dice roller, to represent critical hits/misses.
 
     public static final Scanner console = new Scanner(System.in);
-    
+
     private static boolean userReturned = false;
 
     public static Map<String, Character> charactersMap = new HashMap<>();
@@ -53,7 +53,7 @@ public class Main
             {
                 //noinspection ResultOfMethodCallIgnored
                 storeCharacters.createNewFile();
-                GaryOak = new Character(4, 4, 4, "none", "Adversary", 1);
+                GaryOak = new Character(4, 4, 4, "none", "Adversary");
                 charactersMap.put("Adversary", GaryOak);
             }
             toFile = new PrintWriter(new BufferedWriter(new FileWriter(storeCharacters, true)));
@@ -73,8 +73,6 @@ public class Main
         System.out.println("Hi! This is my version of the Name Tag Game. It's very bare-bones at the moment.");
         while (action != 5)
         {
-            writeToFile(toFile);
-
             System.out.println("Do you want to:");
             System.out.println("| Create A New Character (1) |\n| Load A Character (2) |\n| Fight A Character (3) |\n| View Characters (4) |\n| Exit (5) |");
             System.out.print("Please enter the number of your wanted action: ");
@@ -90,7 +88,7 @@ public class Main
             //Consider changing to Switch
             if (action == 1)
             {
-                createCharacter(console, toFile);
+                createCharacter();
             }
             else if (action == 2)
             {
@@ -144,6 +142,7 @@ public class Main
         }
         writeToFile(toFile);
     }
+
     public static void readFile(String filename) throws IOException
     {
         FileReader fr = new FileReader(filename);
@@ -161,11 +160,10 @@ public class Main
                 int atk = Integer.parseInt(reader.readLine());
                 int def = Integer.parseInt(reader.readLine());
                 int spd = Integer.parseInt(reader.readLine());
-                int lvl = Integer.parseInt(reader.readLine());
                 int xp = Integer.parseInt(reader.readLine());
                 int gold = Integer.parseInt(reader.readLine());
                 reader.readLine();
-                Character p = new Character(atk, def, spd, characterClass, name, lvl);
+                Character p = new Character(atk, def, spd, characterClass, name);
                 p.characterGold = gold;
                 p.characterXP = xp;
                 charactersMap.put(p.getCharacterName(), p);
@@ -175,6 +173,7 @@ public class Main
             reader.close();
         }
     }
+
     public static void writeToFile(PrintWriter writer)
     {
         //TODO: writer should really be static. Or local. No need for it to be a parameter, right?
@@ -193,91 +192,129 @@ public class Main
         }
         writer.flush();
     }
+
+    public static int promptForNumber() {
+        int input = -1;
+        do
+        {
+            try
+            {
+                input = Integer.parseInt(console.nextLine());
+            }
+            catch(NumberFormatException e)
+            {
+                System.out.println("That's not a number! Try again: ");
+            }
+        } while(input == -1);
+        return input;
+    }
+
+    //TODO: VERY IMPORTANT! Get this to work and use it for yesNo
+    public static boolean promptForConfirmation() {
+        String input = "";
+        boolean confirm = false;
+        do
+        {
+            try
+            {
+                input = console.nextLine();
+            }
+            catch(NoSuchElementException e)
+            {
+                System.out.println("That's not a valid input. Try again: ");
+            }
+        } while(!input.equals("y") || !input.equals("n"));
+        if(input.equals("y"))
+        {
+            confirm = true;
+        }
+        return confirm;
+    }
+
     //My method to create a character
-    public static void createCharacter(Scanner input, PrintWriter output)
+    public static void createCharacter()
     {
         //Prompt user
         System.out.print("Type in your character's name: ");
-        String pName = input.nextLine();
+        String pName = console.nextLine();
         //Make sure the character has a unique name.
         while (charactersMap.containsKey(pName))
         {
             System.out.print("I'm sorry, that name is already taken.\nEnter a new name: ");
-            pName = input.nextLine();
+            pName = console.nextLine();
         }
-
         //Make sure the character entered the right name.
         System.out.print("Alright! Your character's name is '" + pName + "'. Is that right? (y/n): ");
-        String yesNo = input.nextLine();
+        //TODO: Oh god oh god oh god why. Make this use promptForConfirmation.
+        String yesNo = console.nextLine();
         while (yesNo.charAt(0) != 'y')
         {
             if (yesNo.charAt(0) == 'n')
             {
                 System.out.print("Type in a new name for your character: ");
-                pName = input.nextLine();
+                pName = console.nextLine();
                 System.out.print("Your character's name is now '" + pName + "'. Is that right? (y/n): ");
-                yesNo = input.nextLine();
+                yesNo = console.nextLine();
             }
             else
             {
                 System.out.print("That's not a valid answer. Please say 'y' or 'n': ");
-                yesNo = input.nextLine();
+                yesNo = console.nextLine();
             }
         }
 
         //Prompt them to enter attack. The next sections are nearly identical to the code for name.
         int pATK;
         System.out.print("Great! Now, do you want your attack to be 3, 4, or, 5?: ");
-        pATK = Integer.parseInt(input.nextLine());
-        if (pATK > 5 || pATK < 3)
+        do
         {
-            while (!(pATK == 3 || pATK == 4 || pATK == 5))
+            pATK = promptForNumber();
+            if (pATK > 5 || pATK < 3)
             {
                 System.out.print("That's not a usable value for a character's starting attack. Please enter either a 3, 4, or 5: ");
-                pATK = Integer.parseInt(input.nextLine());
             }
-        }
+        } while(pATK > 5 || pATK < 3);
         System.out.print("Alright, your attack is " + pATK + ", is that right? (y/n): ");
-        yesNo = input.nextLine();
+        yesNo = console.nextLine();
         while (yesNo.charAt(0) != 'y')
         {
             if (yesNo.charAt(0) == 'n')
             {
                 System.out.print("Type in your character's new attack then: ");
-                pATK = Integer.parseInt(input.nextLine());
+                pATK = Integer.parseInt(console.nextLine());
                 System.out.print("Alright, your attack is " + pATK + ", is that right? (y/n): ");
-                yesNo = input.nextLine();
+                yesNo = console.nextLine();
             }
             else
             {
                 System.out.print("That's not a valid answer. Please say 'y' or 'n': ");
-                yesNo = input.nextLine();
+                yesNo = console.nextLine();
             }
         }
 
         int pDEF;
         System.out.print("Awesome! Now, enter your defense value. Remember that for stats you can only assign one 3, one 4, and one 5: ");
-        pDEF = Integer.parseInt(input.nextLine());
+        pDEF = Integer.parseInt(console.nextLine());
         while (pDEF > 5 || pDEF < 3 || pDEF == pATK)
         {
             System.out.print("That's not a usable value for a character's starting defense. Please enter either a 3, 4, or 5, and not the same value as you did for attack: ");
-            pDEF = Integer.parseInt(input.nextLine());
+            pDEF = Integer.parseInt(console.nextLine());
         }
         System.out.print("Alright, your defense is " + pDEF + ", is that right? (y/n): ");
-        yesNo = input.nextLine();
+        yesNo = console.nextLine();
         while (yesNo.charAt(0) != 'y')
         {
             if (yesNo.charAt(0) == 'n')
             {
                 System.out.print("Type in your character's new defense then: ");
-                pDEF = Integer.parseInt(input.nextLine());
+                pDEF = Integer.parseInt(console.nextLine());
                 System.out.print("Alright, your defense is " + pDEF + ", is that right? (y/n): ");
-                yesNo = input.nextLine();
+                yesNo = console.nextLine();
             }
             else
             {
                 System.out.println("That's not a valid answer. Please say 'y' or 'n': ");
-                yesNo = input.nextLine();
+                yesNo = console.nextLine();
             }
         }
 
@@ -286,20 +323,18 @@ public class Main
 
         //It looks better to wait for confirmation.
         System.out.print("Okay! Your character has been created. Press enter to continue: ");
-        input.nextLine();
+        console.nextLine();
         System.out.println();
 
         //Store the new character in a temporary variable, add the name to my file and the character + name to my map.
-        Character p = new Character(pATK, pDEF, pSPD, "none", pName, 1);
+        Character p = new Character(pATK, pDEF, pSPD, "none", pName);
         charactersMap.put(pName, p);
 
         //output.println(p.getCharacterName());
         playerCharacter = p;
-
-        writeToFile(output); //TODO: Let's remove the parameter from here.
     }
 
-    //Simple function to load the character's character
+    //Used anytime a character is to be listed and chosen
     @Nullable
     public static Character getCharacter(String reason)
     {
