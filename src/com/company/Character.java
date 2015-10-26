@@ -15,21 +15,22 @@ public class Character
     private String characterName;
     private String characterClass;
     int characterLvl;
-    int characterGold = 0;
-    int characterXP = 0;
-    int mana = 4;
+    int characterGold;
+    int characterXP;
+    int mana;
     Map<Buff,Boolean> currentBuffs;
 
     //set the stats
-    public Character(int ATK, int DEF, int SPD, String classParameter, String name, int level)
+    public Character(int ATK, int DEF, int SPD, String classParameter, String name)
     {
         this.attackStat = ATK;
         this.defenseStat = DEF;
         this.speedStat = SPD;
         this.characterName = name;
         this.characterClass = classParameter;
-        this.characterLvl = level;
+        this.characterLvl = 1 + (getCharacterXP()/10);
         this.health = getBaseHealth();
+        this.characterXP = 0;
         this.mana = 4;
         this.currentBuffs = new HashMap<>();
         this.removeAllBuffs();
@@ -55,30 +56,15 @@ public class Character
     }
 
     //All of my functions. They're simple enough that I won't walk through them.
-    public void dealDamage(int damage)
-    {
-        health -= damage;
-    }
+    public void dealDamage(int damage) {health -= damage;}
 
-    public boolean isDead()
-    {
-        return (health <= 0);
-    }
+    public boolean isDead() {return (health <= 0);}
 
-    public boolean hasBuff(Buff b)
-    {
-        return currentBuffs.get(b);
-    }
+    public boolean hasBuff(Buff b) {return currentBuffs.get(b);}
 
-    public void addBuff(Buff b)
-    {
-        currentBuffs.put(b, true);
-    }
+    public void addBuff(Buff b) {currentBuffs.put(b, true);}
 
-    public void removeBuff(Buff b)
-    {
-        currentBuffs.put(b, false);
-    }
+    public void removeBuff(Buff b) {currentBuffs.put(b, false);}
 
     public int currentBuffAmount(Buff b)
     {
@@ -97,6 +83,7 @@ public class Character
 
     public void rollForBuffRemoval()
     {
+        //Berries are a test class
         if(this.getCharacterClass().equals("berry")) return;
         for(Buff b : Buff.values())
         {
@@ -128,9 +115,11 @@ public class Character
 
     public int getCharacterXP() {return characterXP;}
     public void setCharacterXP(int newCharacterXP) {characterXP = newCharacterXP;}
+    public void addCharacterXP(int amountXP) {characterXP += amountXP;}
 
     public int getCharacterGold() {return characterGold;}
     public void setCharacterGold(int newCharacterGold) {characterGold = newCharacterGold;}
+    public void addCharacterGold(int amountGold) {characterXP += amountGold;}
 
     public int getHealth() {return health;}
     public void setHealth(int newHealth) {health = newHealth;}
