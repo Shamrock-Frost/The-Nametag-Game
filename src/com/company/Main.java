@@ -11,6 +11,7 @@ import java.util.*;
 //Open main class
 public class Main
 {
+    //TODO:  Consider switching toFile to a PrintStream
 
     //Define global things and things used in functions other than main.
 
@@ -57,7 +58,7 @@ public class Main
                 charactersMap.put("Adversary", GaryOak);
             }
             toFile = new PrintWriter(new BufferedWriter(new FileWriter(storeCharacters, true)));
-            readFile("..\\characters.txt");
+            readFile(storeCharacters);
         } catch (IOException e)
         {
             e.printStackTrace();
@@ -79,73 +80,67 @@ public class Main
 
             try
             {
-                action = Integer.parseInt(console.nextLine());
+                action = promptForNumber();
             } catch (NumberFormatException e)
             {
                 action = 0;
             }
 
-            //Consider changing to Switch
-            if (action == 1)
-            {
-                createCharacter();
-            }
-            else if (action == 2)
-            {
-                Character p = getCharacter("load");
-                if (p == GaryOak && !userReturned)
-                {
-                    System.out.println("You can't load this character at this time.\n");
+            switch (action) {
+                case 1: {
+                    createCharacter();
                 }
-                else
-                {
-                    playerCharacter = p;
-                }
-            }
-            else if (action == 3)
-            {
-                if (playerCharacter != GaryOak)
-                {
-                    @Nullable Character enemy = getCharacter("fight");
-                    if (enemy != playerCharacter)
-                    {
-                        Duel(playerCharacter, enemy);
-                    }
-                    else
-                    {
-                        System.out.println("You can't fight yourself!\n");
+                    break;
+                case 2: {
+                    Character p = getCharacter("load");
+                    if (p == GaryOak && !userReturned) {
+                        System.out.println("You can't load this character at this time.\n");
+                    } else {
+                        playerCharacter = p;
                     }
                 }
-                else
-                {
-                    System.out.println("I'm sorry, please load or create a character.\n");
+                    break;
+                case 3: {
+                    if (playerCharacter != GaryOak) {
+                        @Nullable Character enemy = getCharacter("fight");
+                        if (enemy != playerCharacter) {
+                            Duel(playerCharacter, enemy);
+                        } else {
+                            System.out.println("You can't fight yourself!\n");
+                        }
+                    } else {
+                        System.out.println("I'm sorry, please load or create a character.\n");
+                    }
                 }
-            }
-            else if (action == 4)
-            {
-                Character p = getCharacter("view");
-                System.out.println("\t:::STATS:::");
-                System.out.println("NAME: " + p.getCharacterName());
-                System.out.println("CLASS: " + p.getCharacterClass());
-                System.out.println("ATK: " + p.getAttackStat());
-                System.out.println("DEF: " + p.getDefenseStat());
-                System.out.println("SPD: " + p.getSpeedStat());
-                System.out.println("LVL: " + p.getCharacterLevel());
-                System.out.println("XP: " + p.getCharacterXP());
-                System.out.println("GOLD: " + p.getCharacterGold());
-                System.out.println();
-            }
-            else if (action != 5)
-            {
-                System.out.println("That is not a valid action.\n");
+                    break;
+                case 4: {
+                    Character p = getCharacter("view");
+                    System.out.println("\t:::STATS:::");
+                    System.out.println("NAME: " + p.getCharacterName());
+                    System.out.println("CLASS: " + p.getCharacterClass());
+                    System.out.println("ATK: " + p.getAttackStat());
+                    System.out.println("DEF: " + p.getDefenseStat());
+                    System.out.println("SPD: " + p.getSpeedStat());
+                    System.out.println("LVL: " + p.getCharacterLevel());
+                    System.out.println("XP: " + p.getCharacterXP());
+                    System.out.println("GOLD: " + p.getCharacterGold());
+                    System.out.println();
+                }
+                    break;
+                case 5:
+                    break;
+                default: {
+                    System.out.println("That is not a valid action.\n");
+                }
+                    break;
             }
         }
-        writeToFile(toFile);
+        writeToFile(toFile, storeCharacters);
     }
 
-    public static void readFile(String filename) throws IOException
+    public static void readFile(File toRead) throws IOException
     {
-        FileReader fr = new FileReader(filename);
+        FileReader fr = new FileReader(toRead);
         BufferedReader reader = new BufferedReader(fr);
         try
         {
@@ -160,12 +155,14 @@ public class Main
                 int atk = Integer.parseInt(reader.readLine());
                 int def = Integer.parseInt(reader.readLine());
                 int spd = Integer.parseInt(reader.readLine());
+                int lvl = Integer.parseInt(reader.readLine());
                 int xp = Integer.parseInt(reader.readLine());
                 int gold = Integer.parseInt(reader.readLine());
                 reader.readLine();
                 Character p = new Character(atk, def, spd, characterClass, name);
-                p.characterGold = gold;
-                p.characterXP = xp;
+                p.setCharacterLevel(lvl);
+                p.setCharacterGold(gold);
+                p.setCharacterXP(xp);
                 charactersMap.put(p.getCharacterName(), p);
             }
         } catch (NumberFormatException e)
@@ -174,12 +171,23 @@ public class Main
         }
     }
 
-    public static void writeToFile(PrintWriter writer)
+    public static void writeToFile(PrintWriter writer, File toStore)
     {
         //TODO: writer should really be static. Or local. No need for it to be a parameter, right?
-        writer.write("");
-        for (Character p : charactersMap.values())
+        try
         {
+            PrintStream stream = new PrintStream (toStore);
+            stream.print("");
+        } catch (IOException e)
+        {
+            e.printStackTrace();
+            return;
+        }
+
+
+        for (Map.Entry<String, Character> entry : charactersMap.entrySet())
+        {
+            Character p = entry.getValue();
             writer.println(p.getCharacterName());
             writer.println(p.getCharacterClass());
             writer.println(p.getAttackStat());
@@ -191,6 +199,7 @@ public class Main
             writer.println();
         }
         writer.flush();
+        writer.close();
     }
 
     public static int promptForNumber() {
@@ -209,26 +218,13 @@ public class Main
         return input;
     }
 
-    //TODO: VERY IMPORTANT! Get this to work and use it for yesNo
-    public static boolean promptForConfirmation() {
-        String input = "";
-        boolean confirm = false;
-        do
-        {
-            try
-            {
-                input = console.nextLine();
-            }
-            catch(NoSuchElementException e)
-            {
-                System.out.println("That's not a valid input. Try again: ");
-            }
-        } while(!input.equals("y") || !input.equals("n"));
-        if(input.equals("y"))
-        {
-            confirm = true;
+    //Method to make sure my strings are not empty
+    public static String notEmpty(String toCheck) {
+        while(toCheck.isEmpty()){
+            System.out.println("That's not a valid input! Please enter a better value.");
+            toCheck = console.nextLine();
         }
-        return confirm;
+        return toCheck;
     }
 
     //My method to create a character
@@ -245,8 +241,8 @@ public class Main
         }
         //Make sure the character entered the right name.
         System.out.print("Alright! Your character's name is '" + pName + "'. Is that right? (y/n): ");
-        //TODO: Oh god oh god oh god why. Make this use promptForConfirmation.
         String yesNo = console.nextLine();
+        yesNo = notEmpty(yesNo);
         while (yesNo.charAt(0) != 'y')
         {
             if (yesNo.charAt(0) == 'n')
@@ -255,11 +251,13 @@ public class Main
                 pName = console.nextLine();
                 System.out.print("Your character's name is now '" + pName + "'. Is that right? (y/n): ");
                 yesNo = console.nextLine();
+                yesNo = notEmpty(yesNo);
             }
             else
             {
                 System.out.print("That's not a valid answer. Please say 'y' or 'n': ");
                 yesNo = console.nextLine();
+                yesNo = notEmpty(yesNo);
             }
         }
 
@@ -276,45 +274,51 @@ public class Main
         } while(pATK > 5 || pATK < 3);
         System.out.print("Alright, your attack is " + pATK + ", is that right? (y/n): ");
         yesNo = console.nextLine();
+        yesNo = notEmpty(yesNo);
         while (yesNo.charAt(0) != 'y')
         {
             if (yesNo.charAt(0) == 'n')
             {
                 System.out.print("Type in your character's new attack then: ");
-                pATK = Integer.parseInt(console.nextLine());
+                pATK = promptForNumber();
                 System.out.print("Alright, your attack is " + pATK + ", is that right? (y/n): ");
                 yesNo = console.nextLine();
+                yesNo = notEmpty(yesNo);
             }
             else
             {
                 System.out.print("That's not a valid answer. Please say 'y' or 'n': ");
                 yesNo = console.nextLine();
+                yesNo = notEmpty(yesNo);
             }
         }
 
         int pDEF;
         System.out.print("Awesome! Now, enter your defense value. Remember that for stats you can only assign one 3, one 4, and one 5: ");
-        pDEF = Integer.parseInt(console.nextLine());
+        pDEF = promptForNumber();
         while (pDEF > 5 || pDEF < 3 || pDEF == pATK)
         {
             System.out.print("That's not a usable value for a character's starting defense. Please enter either a 3, 4, or 5, and not the same value as you did for attack: ");
-            pDEF = Integer.parseInt(console.nextLine());
+            pDEF = promptForNumber();
         }
         System.out.print("Alright, your defense is " + pDEF + ", is that right? (y/n): ");
         yesNo = console.nextLine();
+        yesNo = notEmpty(yesNo);
         while (yesNo.charAt(0) != 'y')
         {
             if (yesNo.charAt(0) == 'n')
             {
                 System.out.print("Type in your character's new defense then: ");
-                pDEF = Integer.parseInt(console.nextLine());
+                pDEF = promptForNumber();
                 System.out.print("Alright, your defense is " + pDEF + ", is that right? (y/n): ");
                 yesNo = console.nextLine();
+                yesNo = notEmpty(yesNo);
             }
             else
             {
                 System.out.println("That's not a valid answer. Please say 'y' or 'n': ");
                 yesNo = console.nextLine();
+                yesNo = notEmpty(yesNo);
             }
         }
 
