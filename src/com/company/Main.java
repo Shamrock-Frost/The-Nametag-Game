@@ -1,8 +1,6 @@
 package com.company;
 
 //import my things
-
-
 import org.jetbrains.annotations.*;
 
 import java.io.*;
