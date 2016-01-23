@@ -13,7 +13,8 @@ public enum Buff
     CriticalMissDebuff(1, 4, "Blinded"),
     EvilFire(1, 6, "Shadow Fire"),
     Fire(2, 4, "On Fire"),
-    Poison(1, 5, "Poisoned");
+    Poison(1, 5, "Poisoned"),
+    Oops(0, 0, "You Have Encountered An Error");
 
     private int removalThreshold;
     private int buffAmount;
@@ -26,18 +27,9 @@ public enum Buff
         this.buffName = name;
     }
 
-    public int getBuffAmount()
-    {
-        return buffAmount;
-    }
+    public int getBuffAmount() {return buffAmount;}
 
-    public boolean rollToKeep()
-    {
-        return DiceGenerator.roll() < removalThreshold;
-    }
+    public boolean rollToKeep() {return DiceGenerator.roll() < removalThreshold;}
 
-    public String getBuffName()
-    {
-        return buffName;
-    }
+    public String getBuffName() {return buffName;}
 }

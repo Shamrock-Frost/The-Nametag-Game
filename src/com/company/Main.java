@@ -1,6 +1,8 @@
 package com.company;
 
 //import my things
+
+
 import org.jetbrains.annotations.*;
 
 import java.io.*;
@@ -88,7 +90,7 @@ public class Main
                 case 1: {
                     createCharacter();
                 }
-                    break;
+                break;
                 case 2: {
                     Character p = getCharacter("load");
                     if (p == GaryOak && !userReturned) {
@@ -97,7 +99,7 @@ public class Main
                         playerCharacter = p;
                     }
                 }
-                    break;
+                break;
                 case 3: {
                     if (playerCharacter != GaryOak) {
                         @Nullable Character enemy = getCharacter("fight");
@@ -110,7 +112,7 @@ public class Main
                         System.out.println("I'm sorry, please load or create a character.\n");
                     }
                 }
-                    break;
+                break;
                 case 4: {
                     Character p = getCharacter("view");
                     System.out.println("\t:::STATS:::");
@@ -124,13 +126,13 @@ public class Main
                     System.out.println("GOLD: " + p.getCharacterGold());
                     System.out.println();
                 }
-                    break;
+                break;
                 case 5:
                     break;
                 default: {
                     System.out.println("That is not a valid action.\n");
                 }
-                    break;
+                break;
             }
         }
         writeToFile(toFile, storeCharacters);
@@ -210,7 +212,7 @@ public class Main
             }
             catch(NumberFormatException e)
             {
-                System.out.println("That's not a number! Try again: ");
+                System.out.print("That's not a number! Try again: ");
             }
         } while(input == -1);
         return input;
@@ -219,7 +221,7 @@ public class Main
     //Method to make sure my strings are not empty
     public static String notEmpty(String toCheck) {
         while(toCheck.isEmpty()){
-            System.out.println("That's not a valid input! Please enter a better value.");
+            System.out.print("That's not a valid input! Please enter a better value: ");
             toCheck = console.nextLine();
         }
         return toCheck;
@@ -234,27 +236,27 @@ public class Main
         //Make sure the character has a unique name.
         while (charactersMap.containsKey(pName))
         {
-            System.out.print("I'm sorry, that name is already taken.\nEnter a new name: ");
+            System.out.print("I'm sorry, that name is already taken." + '\n' + "Enter a new name: ");
             pName = console.nextLine();
         }
         //Make sure the character entered the right name.
         System.out.print("Alright! Your character's name is '" + pName + "'. Is that right? (y/n): ");
-        String yesNo = console.nextLine();
+        String yesNo = console.next();
         yesNo = notEmpty(yesNo);
-        while (yesNo.charAt(0) != 'y')
+        while (!yesNo.toLowerCase().startsWith("y"))
         {
-            if (yesNo.charAt(0) == 'n')
+            if (yesNo.toLowerCase().startsWith("n"))
             {
                 System.out.print("Type in a new name for your character: ");
                 pName = console.nextLine();
                 System.out.print("Your character's name is now '" + pName + "'. Is that right? (y/n): ");
-                yesNo = console.nextLine();
+                yesNo = console.next();
                 yesNo = notEmpty(yesNo);
             }
             else
             {
                 System.out.print("That's not a valid answer. Please say 'y' or 'n': ");
-                yesNo = console.nextLine();
+                yesNo = console.next();
                 yesNo = notEmpty(yesNo);
             }
         }
@@ -271,7 +273,7 @@ public class Main
             }
         } while(pATK > 5 || pATK < 3);
         System.out.print("Alright, your attack is " + pATK + ", is that right? (y/n): ");
-        yesNo = console.nextLine();
+        yesNo = console.next();
         yesNo = notEmpty(yesNo);
         while (yesNo.charAt(0) != 'y')
         {
@@ -280,13 +282,13 @@ public class Main
                 System.out.print("Type in your character's new attack then: ");
                 pATK = promptForNumber();
                 System.out.print("Alright, your attack is " + pATK + ", is that right? (y/n): ");
-                yesNo = console.nextLine();
+                yesNo = console.next();
                 yesNo = notEmpty(yesNo);
             }
             else
             {
                 System.out.print("That's not a valid answer. Please say 'y' or 'n': ");
-                yesNo = console.nextLine();
+                yesNo = console.next();
                 yesNo = notEmpty(yesNo);
             }
         }
@@ -300,7 +302,7 @@ public class Main
             pDEF = promptForNumber();
         }
         System.out.print("Alright, your defense is " + pDEF + ", is that right? (y/n): ");
-        yesNo = console.nextLine();
+        yesNo = console.next();
         yesNo = notEmpty(yesNo);
         while (yesNo.charAt(0) != 'y')
         {
@@ -309,13 +311,13 @@ public class Main
                 System.out.print("Type in your character's new defense then: ");
                 pDEF = promptForNumber();
                 System.out.print("Alright, your defense is " + pDEF + ", is that right? (y/n): ");
-                yesNo = console.nextLine();
+                yesNo = console.next();
                 yesNo = notEmpty(yesNo);
             }
             else
             {
                 System.out.println("That's not a valid answer. Please say 'y' or 'n': ");
-                yesNo = console.nextLine();
+                yesNo = console.next();
                 yesNo = notEmpty(yesNo);
             }
         }
@@ -337,7 +339,7 @@ public class Main
     }
 
     //Used anytime a character is to be listed and chosen
-    @Nullable
+    //@Nullable
     public static Character getCharacter(String reason)
     {
         userReturned = false;
