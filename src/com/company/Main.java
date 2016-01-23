@@ -1,8 +1,6 @@
 package com.company;
 
 //import my things
-
-
 import org.jetbrains.annotations.*;
 
 import java.io.*;
@@ -11,8 +9,6 @@ import java.util.*;
 //Open main class
 public class Main
 {
-    //TODO:  Consider switching toFile to a PrintStream
-
     //Define global things and things used in functions other than main.
 
     public static final int SIDES_PER_DIE = 6;
@@ -42,9 +38,6 @@ public class Main
         //Define my File
         File storeCharacters;
 
-        //Define/initialize my PrintWriter and initialize my map.
-        PrintWriter toFile;
-
         //Made in the try/catch because java made me and it should stop errors? I hope?
         try
         {
@@ -57,7 +50,6 @@ public class Main
                 GaryOak = new Character(4, 4, 4, "none", "Adversary");
                 charactersMap.put("Adversary", GaryOak);
             }
-            toFile = new PrintWriter(new BufferedWriter(new FileWriter(storeCharacters, true)));
             readFile(storeCharacters);
         } catch (IOException e)
         {
@@ -135,7 +127,7 @@ public class Main
                 break;
             }
         }
-        writeToFile(toFile, storeCharacters);
+        writeToFile(storeCharacters);
     }
 
     public static void readFile(File toRead) throws IOException
@@ -171,13 +163,14 @@ public class Main
         }
     }
 
-    public static void writeToFile(PrintWriter writer, File toStore)
+    public static void writeToFile(File toStore)
     {
+        PrintStream writer;
         //TODO: writer should really be static. Or local. No need for it to be a parameter, right?
         try
         {
-            PrintStream stream = new PrintStream (toStore);
-            stream.print("");
+            writer = new PrintStream (toStore);
+            writer.print("");
         } catch (IOException e)
         {
             e.printStackTrace();
